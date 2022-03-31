@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo gcc usaDicionario.c ddinamico.c obasico/lista.c obasico/vdinamico.c -o program -lm && ./program < $1
+sudo gcc src/usaDicionario.c src/ddinamico.c src/obasico/lista.c src/obasico/vdinamico.c -o program -lm && ./program < $1 > out/$2.txt

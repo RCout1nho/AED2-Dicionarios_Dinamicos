@@ -1,3 +1,9 @@
 .vscode
+
 *.todo
+
 program
+.out
+.in
+
+out/
