@@ -1,4 +1,4 @@
-## Como executar?
+# Como executar?
 
 Abra o console nesse diretório e execute o seguinto comando:
 

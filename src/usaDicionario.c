@@ -164,25 +164,29 @@ int main(int argc, char const *argv[])
   char *plida = lerpalavra();
   while (plida != NULL)
   {
+    /* Próxima página */
     if (strcmp(plida, "pa") == 0)
     {
       paginaAtual++;
     }
-    else if ((strlen(plida) < 10) && (strlen(plida) > 10))
-    { // stopwords(plida)){
-    }
+    // else if (strlen(plida) <= 13)
+    // {
+    //   // stopwords(plida)){
+    //   /* Se for stopword */
+    // }
     else
     {
+      /* Se não for stopword */
       int chave = toInteiro(plida);
       if (chave > 0)
       {
         // TPalavra *palavra=NULL;
         TPalavra *palavra = buscarDD(dicio, chave);
-        if (palavra == NULL)
+        if (palavra == NULL) // Não há colisão
         {
           inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
         }
-        else
+        else // Há colisão
         {
           atualizarPalavra(palavra, paginaAtual);
         }
