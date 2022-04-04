@@ -4,6 +4,7 @@
 #include "ctype.h"
 #include "ddinamico.h"
 #include "./obasico/lista.h"
+#include "./obasico/vdinamico.h"
 
 #define STOPWORDS_TOTAL 392
 #define STOPWORD_SIZE 13
@@ -159,6 +160,13 @@ char *lerpalavra()
   return lidaLimpa;
 }
 
+/**
+ * # Esta função é responsável por popular o dicionário estático
+ * de stopwords com o conteúdo do arquivo de stopwords
+ *
+ * O conteúdo do arquivo foi preveamente ordenado (comom sugere o documento do trabalho)
+ *
+ */
 void preenche_stopword(char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE])
 {
   FILE *ptr;
@@ -180,6 +188,7 @@ void preenche_stopword(char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE])
   fclose(ptr);
 }
 
+/* Busca binária em array de strings (recursiva) */
 int busca_binaria(char word[STOPWORD_SIZE], char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE], int inicio, int fim)
 {
   int meio, comp;
@@ -205,14 +214,62 @@ int busca_binaria(char word[STOPWORD_SIZE], char stopwords[STOPWORDS_TOTAL][STOP
   }
 }
 
+/**
+ * # Esta função diz se uma palavra é ou não é uma stopword
+ *
+ * Retorna 1 caso seja
+ * Retorn 0 caso não seja
+ */
 int eh_stopword(char word[STOPWORD_SIZE], char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE])
 {
+  /* É aplicado busca binária para encontrar uma palavra no dicionário estático de stop words */
   return busca_binaria(word, stopwords, 0, STOPWORDS_TOTAL - 1);
+}
+
+/**
+ * # Esta função é uma tentativa de implementar a função que
+ * computa a "frequência de tempo"
+ *
+ * Obtivemos sucesso ao calcular o total de vezes que a mesma
+ * palavra aparece na mesma páginas
+ *
+ * Não conseguimos calcular a quantidade total de palavras em
+ * uma mesma página
+ *
+ */
+void tf(char *word, int pagina, TDicioDinamico *dicio)
+{
+  int chave = toInteiro(word);
+  TPalavra *palavra = buscarDD(dicio, chave);
+  // imprimirLSE(palavra->paginas, imprimirOcorrencia);
+
+  TOcorrencia *ocorre = buscarConteudoLSE(palavra->paginas, compararOcorrencia, &pagina);
+
+  int totalPalavrasNoDoc = ocorre->qtde; // numero de vezes que a palavra aparece na pagina
+
+  int cont = 0;
+
+  // tentando contar o total de palavras em uma página
+  for (int i = 0; i < 123; i++)
+  {
+    for (int j = 1; j <= 5; j++)
+    {
+      TPalavra *lst = retornaLista(dicio, i, j);
+      if (lst != NULL)
+      {
+        TOcorrencia *ocr = buscarConteudoLSE(lst->paginas, compararOcorrencia, &pagina);
+        if (ocr != NULL)
+        {
+          cont += ocr->qtde;
+        }
+      }
+    }
+  }
 }
 
 int main(int argc, char const *argv[])
 {
-  TDicioDinamico *dicio = criarDicioDinamico(2, 17, compararPalavra, mostrarPalavra);
+  TDicioDinamico *dicio_sem_sw = criarDicioDinamico(5, 123, compararPalavra, mostrarPalavra);
 
   char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE];
   preenche_stopword(stopwords);
@@ -226,26 +283,29 @@ int main(int argc, char const *argv[])
     {
       paginaAtual++;
     }
-    else if (!eh_stopword(plida, stopwords))
+    else
     {
-      /* Se não for stopword */
       int chave = toInteiro(plida);
       if (chave > 0)
       {
-        // TPalavra *palavra=NULL;
-        TPalavra *palavra = buscarDD(dicio, chave);
-        if (palavra == NULL) // Não há colisão
+        TPalavra *palavra_sem_sw = buscarDD(dicio_sem_sw, chave);
+        if (palavra_sem_sw == NULL)
         {
-          inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
+          /* Verifica se a palavra não é stopword antes que indexá-la */
+          if (!eh_stopword(plida, stopwords))
+          {
+            inserirDD(dicio_sem_sw, chave, criarPalavra(plida, paginaAtual));
+          }
         }
-        else // Há colisão
+        else
         {
-          atualizarPalavra(palavra, paginaAtual);
+          atualizarPalavra(palavra_sem_sw, paginaAtual);
         }
       }
     }
     plida = lerpalavra();
   }
-  imprimirDD(dicio);
+  imprimirDD(dicio_sem_sw);
+  // tf("braços", 41, dicio_sem_sw);
   return 0;
 }

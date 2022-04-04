@@ -61,6 +61,15 @@ void inserirDD(TDicioDinamico *dicio, int chave, void *carga)
   inserirInicioLSE(lst, carga);
 }
 
+void *retornaLista(TDicioDinamico *dicio, int k, int pos)
+{
+  TListaSE *lst = acessarVD(dicio->hash, k);
+
+  void *carga = acessarLSE(lst, pos);
+
+  return carga;
+}
+
 void *buscarDD(TDicioDinamico *dicio, int chave)
 {
   int k = hashing(dicio, chave);

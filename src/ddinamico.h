@@ -8,3 +8,4 @@ void inserirDD(TDicioDinamico *dicio, int chave, void *carga);
 void *buscarDD(TDicioDinamico *dicio, int chave);
 void *removerDD(TDicioDinamico *dicio, int chave);
 void imprimirDD(TDicioDinamico *dicio);
+void *retornaLista(TDicioDinamico *dicio, int k, int pos);
