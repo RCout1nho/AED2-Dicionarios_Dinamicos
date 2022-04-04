@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "./obasico/vdinamico.h"
-#include "edicio.h"
+#include "../obasico/vdinamico.h"
+#include "destatico.h"
 
 /* TAD Dicionario */
 struct dicio
