@@ -2,8 +2,5 @@
 
 *.todo
 
-program
-.out
-.in
-
-out/
+*.o
+*.out
