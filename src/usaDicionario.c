@@ -5,6 +5,9 @@
 #include "ddinamico.h"
 #include "./obasico/lista.h"
 
+#define STOPWORDS_TOTAL 392
+#define STOPWORD_SIZE 13
+
 typedef struct
 {
   int chave;
@@ -156,44 +159,98 @@ char *lerpalavra()
   return lidaLimpa;
 }
 
+void preenche_stopword(char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE])
+{
+  FILE *ptr;
+  char str[50];
+  ptr = fopen("src/stopwords_br_sorted.txt", "r");
+
+  int i = 0;
+
+  if (ptr == NULL)
+  {
+    return;
+  }
+
+  while (fscanf(ptr, "%s", str) != EOF)
+  {
+    strcpy(stopwords[i++], str);
+  }
+
+  fclose(ptr);
+}
+
+int busca_binaria(char word[STOPWORD_SIZE], char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE], int inicio, int fim)
+{
+  int meio, comp;
+
+  if (inicio > fim)
+    return 0;
+
+  meio = (inicio + fim) / 2;
+
+  comp = strcmp(word, stopwords[meio]);
+
+  if (comp == 0)
+  {
+    return 1;
+  }
+  if (comp < 0)
+  {
+    return busca_binaria(word, stopwords, inicio, meio - 1);
+  }
+  else
+  {
+    return busca_binaria(word, stopwords, meio + 1, fim);
+  }
+}
+
+int eh_stopword(char word[STOPWORD_SIZE], char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE])
+{
+  return busca_binaria(word, stopwords, 0, STOPWORDS_TOTAL - 1);
+}
+
 int main(int argc, char const *argv[])
 {
   TDicioDinamico *dicio = criarDicioDinamico(2, 17, compararPalavra, mostrarPalavra);
-  // fp=fopen(argv[1], "r");
-  int paginaAtual = 0;
-  char *plida = lerpalavra();
-  while (plida != NULL)
-  {
-    /* Próxima página */
-    if (strcmp(plida, "pa") == 0)
-    {
-      paginaAtual++;
-    }
-    // else if (strlen(plida) <= 13)
-    // {
-    //   // stopwords(plida)){
-    //   /* Se for stopword */
-    // }
-    else
-    {
-      /* Se não for stopword */
-      int chave = toInteiro(plida);
-      if (chave > 0)
-      {
-        // TPalavra *palavra=NULL;
-        TPalavra *palavra = buscarDD(dicio, chave);
-        if (palavra == NULL) // Não há colisão
-        {
-          inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
-        }
-        else // Há colisão
-        {
-          atualizarPalavra(palavra, paginaAtual);
-        }
-      }
-    }
-    plida = lerpalavra();
-  }
-  imprimirDD(dicio);
-  return 0;
+
+  char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE];
+  preenche_stopword(stopwords);
+
+  // int paginaAtual = 0;
+  // char *plida = lerpalavra();
+  // while (plida != NULL)
+  // {
+  //   /* Próxima página */
+  //   if (strcmp(plida, "pa") == 0)
+  //   {
+  //     paginaAtual++;
+  //   }
+  //   // else if (strlen(plida) <= 13)
+  //   // {
+  //   //   // stopwords(plida)){
+  //   //   /* Se for stopword */
+  //   // }
+  //   else
+  //   {
+  //     /* Se não for stopword */
+  //     int chave = toInteiro(plida);
+  //     if (chave > 0)
+  //     {
+  //       // TPalavra *palavra=NULL;
+  //       TPalavra *palavra = buscarDD(dicio, chave);
+  //       if (palavra == NULL) // Não há colisão
+  //       {
+  //         inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
+  //       }
+  //       else // Há colisão
+  //       {
+  //         atualizarPalavra(palavra, paginaAtual);
+  //       }
+  //     }
+  //   }
+  //   plida = lerpalavra();
+  // }
+  // imprimirDD(dicio);
+  // return 0;
 }
