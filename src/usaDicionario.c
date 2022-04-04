@@ -217,40 +217,35 @@ int main(int argc, char const *argv[])
   char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE];
   preenche_stopword(stopwords);
 
-  // int paginaAtual = 0;
-  // char *plida = lerpalavra();
-  // while (plida != NULL)
-  // {
-  //   /* Próxima página */
-  //   if (strcmp(plida, "pa") == 0)
-  //   {
-  //     paginaAtual++;
-  //   }
-  //   // else if (strlen(plida) <= 13)
-  //   // {
-  //   //   // stopwords(plida)){
-  //   //   /* Se for stopword */
-  //   // }
-  //   else
-  //   {
-  //     /* Se não for stopword */
-  //     int chave = toInteiro(plida);
-  //     if (chave > 0)
-  //     {
-  //       // TPalavra *palavra=NULL;
-  //       TPalavra *palavra = buscarDD(dicio, chave);
-  //       if (palavra == NULL) // Não há colisão
-  //       {
-  //         inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
-  //       }
-  //       else // Há colisão
-  //       {
-  //         atualizarPalavra(palavra, paginaAtual);
-  //       }
-  //     }
-  //   }
-  //   plida = lerpalavra();
-  // }
-  // imprimirDD(dicio);
-  // return 0;
+  int paginaAtual = 0;
+  char *plida = lerpalavra();
+  while (plida != NULL)
+  {
+    /* Próxima página */
+    if (strcmp(plida, "pa") == 0)
+    {
+      paginaAtual++;
+    }
+    else if (!eh_stopword(plida, stopwords))
+    {
+      /* Se não for stopword */
+      int chave = toInteiro(plida);
+      if (chave > 0)
+      {
+        // TPalavra *palavra=NULL;
+        TPalavra *palavra = buscarDD(dicio, chave);
+        if (palavra == NULL) // Não há colisão
+        {
+          inserirDD(dicio, chave, criarPalavra(plida, paginaAtual));
+        }
+        else // Há colisão
+        {
+          atualizarPalavra(palavra, paginaAtual);
+        }
+      }
+    }
+    plida = lerpalavra();
+  }
+  imprimirDD(dicio);
+  return 0;
 }
