@@ -15,26 +15,23 @@ typedef struct
   int chave;
   char *palavra;
   TListaSE *paginas;
-  // char definicao[2000];
 } TPalavra;
-
-static int toInteiro(char palavra[])
-{
-  int pesos[] = {10, 455, 77, 91, 36, 44, 27, 45, 79, 68, 56};
-  int chave = 0;
-  //  assert(strlen(palavra)<11);
-  //  for (int i=0;i<strlen(palavra);i++)
-  for (int i = 0; (i < strlen(palavra) && i < 11); i++)
-    chave += pesos[i] * palavra[i];
-
-  return chave;
-}
 
 typedef struct ocorrencia
 {
   int pagina;
   int qtde;
 } TOcorrencia;
+
+static int toInteiro(char palavra[])
+{
+  int pesos[] = {10, 455, 77, 91, 36, 44, 27, 45, 79, 68, 56};
+  int chave = 0;
+  for (int i = 0; (i < strlen(palavra) && i < 11); i++)
+    chave += pesos[i] * palavra[i];
+
+  return chave;
+}
 
 int compararOcorrencia(void *voc, void *chave)
 {
@@ -261,13 +258,14 @@ void tf(char *word, int pagina, TDicioDinamico *dicio)
 
 int main(int argc, char const *argv[])
 {
+  /* Dicionario Dinamico de palavras em uma colecao de documentos */
   TDicioDinamico *dicio_sem_sw = criarDicioDinamico(5, 123, compararPalavra, mostrarPalavra);
+
+  /* Dicionario Estatico de stopwords */
   TDicioEstatico *stopwords = criarDicioEstatico();
 
+  /* Popula o dicionáro de stopwords */
   preencher_stopword(stopwords);
-
-  // char stopwords[STOPWORDS_TOTAL][STOPWORD_SIZE];
-  // preenche_stopword(stopwords);
 
   int paginaAtual = 0;
   char *plida = lerpalavra();
