@@ -10,29 +10,9 @@
 #include "stdlib.h"
 #include "math.h"
 #include "vdinamico.h"
-#include "stdio.h" // TODO: remover depois
-#include "lista.h"
 #include "assert.h"
 #include "string.h"
 
-typedef struct
-{
-	int chave;
-	char *palavra;
-	TListaSE *paginas; // TODO: Talvez mudar para TOcorrencia
-} TPalavra;
-
-typedef struct ocorrencia
-{
-	int pagina;
-	int qtde;
-} TOcorrencia;
-
-typedef struct ocorrenciaImportancia
-{
-	double importancia;
-	TOcorrencia *ocorrencia;
-} TOcorrrenciaImportancia;
 struct vdinamico
 {
 	void **vetor;
@@ -43,6 +23,8 @@ struct vdinamico
 static void troca(void *a, void *b, size_t size)
 {
 	void *temp = malloc(size);
+
+	assert(temp != NULL);
 
 	memcpy(temp, b, size);
 	memcpy(b, a, size);

@@ -12,7 +12,7 @@ typedef struct
 {
   int chave;
   char *palavra;
-  TListaSE *paginas; // TODO: Talvez mudar para TOcorrencia
+  TListaSE *paginas;
 } TPalavra;
 
 typedef struct ocorrencia
@@ -230,7 +230,6 @@ int eh_stopword(TDicioEstatico *dicio, char *k)
  */
 double tf(char *word, int pagina, TDicioDinamico *dicio)
 {
-  // TODO: refatorar
   int chave = toInteiro(word);
   TPalavra *palavra = buscarDD(dicio, chave);
 
