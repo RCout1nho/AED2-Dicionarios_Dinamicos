@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "ctype.h"
+#include "math.h"
 #include "./ddinamico/ddinamico.h"
 #include "./destatico/destatico.h"
 #include "./obasico/lista.h"
@@ -213,9 +214,12 @@ int eh_stopword(TDicioEstatico *dicio, char *k)
 }
 
 /**
- * # Esta função é uma tentativa de implementar a função que
- * computa a "frequência de tempo"
+ * @brief Computa "frequência de termo"
  *
+ * @param word
+ * @param pagina
+ * @param dicio
+ * @return double
  */
 double tf(char *word, int pagina, TDicioDinamico *dicio)
 {
@@ -258,7 +262,11 @@ double tf(char *word, int pagina, TDicioDinamico *dicio)
 }
 
 /**
- * # Esta função retorna o número de documentos que contém a palavra
+ * @brief Computa o número de documentos que contém a palavra
+ *
+ * @param word
+ * @param dicio
+ * @return int
  */
 int n_containing(char *word, TDicioDinamico *dicio)
 {
@@ -271,6 +279,20 @@ int n_containing(char *word, TDicioDinamico *dicio)
   int qtdPags = tamanhoLSE(palavra->paginas);
 
   return qtdPags;
+}
+
+/**
+ * @brief computa "inverse document frequency"
+ *
+ * @param word
+ * @param dicio
+ * @param total_docs representa o número total de paginas do documento
+ * @return double
+ */
+double idf(char *word, TDicioDinamico *dicio, int total_docs)
+{
+  double r1 = (total_docs * 1.0) / (n_containing(word, dicio) + 1);
+  return log10(r1);
 }
 
 int main(int argc, char const *argv[])
@@ -312,8 +334,9 @@ int main(int argc, char const *argv[])
 
     plida = lerpalavra();
   }
-  imprimirDD(docCollection);
+  // imprimirDD(docCollection);
   // printf("tf: %.8f\n", tf("quantos", 230, docCollection));
-  // n_containing("quantos", docCollection);
+  // printf("aparece: %d vezes", n_containing("braços", docCollection));
+  printf("idf: %.6f", idf("braços", docCollection, paginaAtual));
   return 0;
 }
