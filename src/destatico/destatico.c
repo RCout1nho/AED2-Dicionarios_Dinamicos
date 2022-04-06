@@ -1,6 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "../obasico/vdinamico.h"
+#include "../vdinamico/vdinamico.h"
 #include "destatico.h"
 
 /* TAD Dicionario */

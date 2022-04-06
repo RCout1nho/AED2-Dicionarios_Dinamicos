@@ -5,8 +5,8 @@
 #include "math.h"
 #include "./ddinamico/ddinamico.h"
 #include "./destatico/destatico.h"
-#include "./obasico/lista.h"
-#include "./obasico/vdinamico.h"
+#include "./lista/lista.h"
+#include "./vdinamico/vdinamico.h"
 
 typedef struct
 {
@@ -27,8 +27,7 @@ typedef struct ocorrenciaImportancia
   TOcorrencia *ocorrencia;
 } TOcorrrenciaImportancia;
 
-static int
-toInteiro(char palavra[])
+static int toInteiro(char palavra[])
 {
   int pesos[] = {10, 455, 77, 91, 36, 44, 27, 45, 79, 68, 56};
   int chave = 0;
@@ -173,11 +172,9 @@ char *criarStopword(char palavra[])
 }
 
 /**
- * # Esta função é responsável por popular o dicionário estático
- * de stopwords com o conteúdo do arquivo de stopwords
+ * @brief popula o dicionário estático de stop words
  *
- * O conteúdo do arquivo foi preveamente ordenado (comom sugere o documento do trabalho)
- *
+ * @param dicio
  */
 void preencher_stopword(TDicioEstatico *dicio)
 {
@@ -210,6 +207,13 @@ int compararStopword(void *elms, void *k)
   return 0;
 }
 
+/**
+ * @brief verifica se uma palavra é stopword
+ *
+ * @param dicio
+ * @param k
+ * @return int: 1 se for stopword | 0 se não for stopword
+ */
 int eh_stopword(TDicioEstatico *dicio, char *k)
 {
   if (buscarBinariaDE(dicio, k, compararStopword) == NULL)
@@ -312,6 +316,13 @@ double tfidf(char *word, int pagina, TDicioDinamico *dicio, int total_docs)
   return tf(word, pagina, dicio) * idf(word, dicio, total_docs);
 }
 
+/**
+ * @brief Compara dois elementos do VD (Auxilia no processo de ordenação)
+ *
+ * @param a
+ * @param b
+ * @return int
+ */
 int comparadorVD(void *a, void *b)
 {
   TOcorrrenciaImportancia *ocr1 = a;
@@ -326,21 +337,36 @@ int comparadorVD(void *a, void *b)
   return 0;
 }
 
+/**
+ * @brief busca uma palavra
+ *
+ * @param word
+ * @param dicio
+ * @param total_docs total de páginas
+ */
 void buscarPalavra(char *word, TDicioDinamico *dicio, int total_docs)
 {
   int chave = toInteiro(word);
   TPalavra *palavra = buscarDD(dicio, chave);
 
+  /* Palavra não existe */
   if (palavra == NULL)
   {
     printf("Palavra não encontrada!\n");
     return;
   }
 
+  /* Vetor dinâmico que contém as ocorrências da palavra */
   TVetorDinamico *vdOcorrencias = criarVetorDinamico();
 
-  int tam_paginas = tamanhoLSE(palavra->paginas); // quantidade de paginas em que há ocorrência
+  /* Quantidade de páginas que contém a palavra */
+  int tam_paginas = tamanhoLSE(palavra->paginas);
 
+  /**
+   * Percorre todas as páginas
+   * Calcula o tf-idf para cada página
+   * Salva a ocorrência juntamente com sua importância no VD
+   */
   for (int i = 1; i <= tam_paginas; i++)
   {
     TOcorrrenciaImportancia *ocrImport = malloc(sizeof(TOcorrrenciaImportancia *));
@@ -354,27 +380,13 @@ void buscarPalavra(char *word, TDicioDinamico *dicio, int total_docs)
     inserirVD(vdOcorrencias, i, ocrImport);
   }
 
-  // for (int i = 0; i < ocupacaoVD(vdOcorrencias); i++)
-  // {
-  //   TOcorrrenciaImportancia *ocr = acessarVD(vdOcorrencias, i);
-  //   printf("i = %d\n", i);
-  //   printf("Pagina: %d\n", ocr->ocorrencia->pagina);
-  //   printf("Importancia: %.6f\n", ocr->importancia);
-  //   printf("Repetições na pagina: %d\n\n", ocr->ocorrencia->qtde);
-  // }
-
+  /* Ordena as ocorrências pela importância importância */
   ordenaVD(vdOcorrencias, comparadorVD, -1);
+
+  /* Quantidade de ocorrências no VD */
   int tamanhoOcorrencias = ocupacaoVD(vdOcorrencias);
 
-  // for (int i = 0; i < tamanhoOcorrencias; i++)
-  // {
-  //   TOcorrrenciaImportancia *ocr = acessarVD(vdOcorrencias, i);
-  //   printf("i = %d\n", i);
-  //   printf("Pagina: %d\n", ocr->ocorrencia->pagina);
-  //   printf("Importancia: %.6f\n", ocr->importancia);
-  //   printf("Repetições na pagina: %d\n\n", ocr->ocorrencia->qtde);
-  // }
-
+  /* No máximo 5 ocorrẽncias mais importantes, mas podem se menos */
   int qtdeMaisImportantes = tamanhoOcorrencias >= 5 ? 5 : tamanhoOcorrencias;
 
   printf("Palavra: %s\n", word);
@@ -428,11 +440,8 @@ int main(int argc, char const *argv[])
 
     plida = lerpalavra();
   }
-  // imprimirDD(docCollection);
-  // printf("tf: %.8f\n", tf("quantos", 230, docCollection));
-  // printf("aparece: %d vezes", n_containing("braços", docCollection));
-  // printf("idf: %.6f", idf("braços", docCollection, paginaAtual));
   // printf("tf-idf: %.6f", tfidf("braços", 1, docCollection, paginaAtual));
-  buscarPalavra("braços", docCollection, paginaAtual);
+  // buscarPalavra("braços", docCollection, paginaAtual);
+  // imprimirDD(docCollection);
   return 0;
 }

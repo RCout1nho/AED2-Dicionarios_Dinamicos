@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "../obasico/vdinamico.h"
-#include "../obasico/lista.h"
+#include "../vdinamico/vdinamico.h"
+#include "../lista/lista.h"
 #include "ddinamico.h"
 
 /*
