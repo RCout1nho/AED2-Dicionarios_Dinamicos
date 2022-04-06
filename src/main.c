@@ -257,6 +257,22 @@ double tf(char *word, int pagina, TDicioDinamico *dicio)
   return (totalDeOcorrenciasNoDoc * 1.0) / totalDePalavras;
 }
 
+/**
+ * # Esta função retorna o número de documentos que contém a palavra
+ */
+int n_containing(char *word, TDicioDinamico *dicio)
+{
+  int chave = toInteiro(word);
+  TPalavra *palavra = buscarDD(dicio, chave);
+
+  if (palavra == NULL)
+    return 0;
+
+  int qtdPags = tamanhoLSE(palavra->paginas);
+
+  return qtdPags;
+}
+
 int main(int argc, char const *argv[])
 {
   /* Dicionario Dinamico de palavras em uma colecao de documentos */
@@ -298,5 +314,6 @@ int main(int argc, char const *argv[])
   }
   imprimirDD(docCollection);
   // printf("tf: %.8f\n", tf("quantos", 230, docCollection));
+  // n_containing("quantos", docCollection);
   return 0;
 }
