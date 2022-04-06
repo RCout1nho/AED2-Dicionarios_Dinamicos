@@ -53,3 +53,7 @@ gcc **/*.c -o program -lm && ./program < bases-dicionario/Aventuras.base > saida
       - Depois de termos terminado de preencher o VD, o ordenamos (usando `quickSort`) pela ordem de importância
   
   3. Agora que temos o vetor ordenado, mostramos apenas até no máximo as 5 ocorrências (em ordem decrescente de importância)
+
+## Sobre as análises
+
+As análises ainda não foram realizadas
