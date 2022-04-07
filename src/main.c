@@ -441,7 +441,7 @@ int main(int argc, char const *argv[])
     plida = lerpalavra();
   }
   // printf("tf-idf: %.6f", tfidf("braços", 1, docCollection, paginaAtual));
-  // buscarPalavra("braços", docCollection, paginaAtual);
+  buscarPalavra("braços", docCollection, paginaAtual);
   // imprimirDD(docCollection);
   return 0;
 }
