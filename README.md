@@ -19,7 +19,7 @@ Onde `arquivo_entrada` corresponde ao nome do arquivo de entrada, e `arquivo_sai
 Exemplo:
 
 ```bash
-gcc **/*.c -o program -lm && ./program < bases-dicionario/Aventuras.base > saida.txt
+gcc **/*.c -o program -lm && ./program.o < bases-dicionario/Aventuras.base > saida.out
 ```
 
 ## Sobre as implementações
